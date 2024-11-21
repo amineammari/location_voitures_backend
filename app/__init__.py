@@ -9,14 +9,16 @@ from .auth import auth as auth_blueprint
 from .routes import main as main_blueprint
 from config import Config
 
-def create_app():
+def create_app(config_class=Config):
     app = Flask(__name__)
-    app.config.from_object(Config)
-    
-    db.init_app(app)
-    CORS(app)  # Permettre les requêtes cross-origin
-    jwt = JWTManager(app)  # Initialiser JWT pour l’authentification
+    app.config.from_object(config_class)
 
+    # Initialize extensions
+    db.init_app(app)
+    CORS(app)  # Enable Cross-Origin Resource Sharing
+    JWTManager(app)  # Initialize JWT
+
+    # Register blueprints
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
     app.register_blueprint(main_blueprint, url_prefix='/api')
 
